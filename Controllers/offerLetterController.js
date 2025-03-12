@@ -1,4 +1,3 @@
-import { data } from "react-router";
 import OFFER from "../models/offerLetterModel.js";
 
 const OfferApi = async (req, res) => {
