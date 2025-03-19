@@ -9,5 +9,5 @@ LoginRouter.get('/protected' , authMiddleware , (req , res) => {
     res.json({ message: "Protected data accessed", user: req.user });
 
 })
-
+     
 export default LoginRouter;
