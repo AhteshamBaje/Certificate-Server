@@ -6,8 +6,7 @@ import router from './Routes/internshipRouter.js';
 import OfferRouter from './Routes/offerLetterRoutes.js';
 import courseRouter from './Routes/courseRouter.js';
 import registerRouter from './Routes/registerRoute.js';
-import LoginRouter from './models/Loginrouter.js';
-
+import LoginRouter from './Routes/Loginrouter.js';
 const app = express();
 
 app.use(cors({
