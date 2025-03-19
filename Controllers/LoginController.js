@@ -3,13 +3,13 @@ import bcrypt from "bcrypt";
 import jwt from 'jsonwebtoken';
 const LoginApi = async (req, res) => {
   try {
-    const { name, password } = req.body;
-    if (!name || !password) {
+    const { email, password } = req.body;
+    if (!email || !password) {
       return res.status(400).json({ error: "All fields are required" });
     }
 
     // Find user by name
-    const user = await Register.findOne({ name });
+    const user = await Register.findOne({ email });
     if (!user) {
       return res.status(400).json({ error: "User not found" });
     }
@@ -22,7 +22,7 @@ const LoginApi = async (req, res) => {
 
      // Generate JWT token
      const token = jwt.sign(
-        { id: user._id, name: user.name },
+        { id: user._id, email: user.email },
         process.env.JWT_SECRET || "Ahtesham006",
         { expiresIn: "1h" }
       );
