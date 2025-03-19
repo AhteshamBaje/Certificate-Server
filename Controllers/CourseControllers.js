@@ -84,6 +84,9 @@ const deleteCourse = async (req, res) => {
 
 const searchData3 = async (req, res) => {
     const { name } = req.params;
+
+    console.log(name);
+    
     try {
         const data = await Course.find({ studentName: { $regex: name, $options: "i" } });
         if (!data) {
