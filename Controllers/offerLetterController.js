@@ -47,7 +47,6 @@ const offerLetterList = async (req, res) => {
     typeof (page);
 
     const skipPage = (page - 1) * pageLimit;
-    console.log(skipPage);
 
     try {
         const totalDocuments = await OFFER.countDocuments();
@@ -126,7 +125,6 @@ const searchData2 = async (req, res) => {
 const uploadOffer = async (req, res) => {
     try {
         const jsonData = req.body.jsonData; // Expecting an array of records
-        console.log(jsonData);
 
         if (!jsonData || jsonData.length === 0) {
             return res.status(400).json({ success: false, message: "No data provided" });
@@ -181,7 +179,7 @@ const uploadOffer = async (req, res) => {
 
         return res.status(201).json({
             success: true,
-            message:  `${insertedRecords.length} new records added`,
+            message: `${insertedRecords.length} new records added`,
             insertedRecords,
             skippedRecords
         });
