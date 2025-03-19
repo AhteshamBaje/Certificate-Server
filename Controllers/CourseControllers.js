@@ -47,7 +47,7 @@ const courseStudentsList = async (req, res) => {
     const pageLimit = 10;
 
     const skipPage = (page - 1) * pageLimit;
-    console.log(skipPage);
+    // console.log(skipPage);
 
 
     try {
@@ -100,7 +100,7 @@ const searchData3 = async (req, res) => {
 const uploadFile = async (req, res) => {
     try {
         const jsonData = req.body.jsonData; // Expecting an array of records
-        console.log(jsonData);
+        // console.log(jsonData);
 
         if (!jsonData || jsonData.length === 0) {
             return res.status(400).json({ success: false, message: "No data provided" });
