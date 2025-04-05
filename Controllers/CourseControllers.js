@@ -102,8 +102,10 @@ const searchData3 = async (req, res) => {
 
 const uploadFile = async (req, res) => {
     try {
+        console.log("runn");
+        
         const jsonData = req.body.jsonData; // Expecting an array of records
-        // console.log(jsonData);
+        console.log(jsonData);
 
         if (!jsonData || jsonData.length === 0) {
             return res.status(400).json({ success: false, message: "No data provided" });
@@ -112,8 +114,8 @@ const uploadFile = async (req, res) => {
         let insertedRecords = [];
         let skippedRecords = [];
 
-        const existingInterns = await Course.find({}, "usn");
-        const existingEmail = new Set(existingInterns.map(intern => intern.email));
+        // const existingInterns = await Course.find({}, "email");
+        // const existingEmail = new Set(existingInterns.map(intern => intern.email));
 
         for (const record of jsonData) {
             const { studentName, email, title, startDate, endDate } = record;
@@ -141,10 +143,10 @@ const uploadFile = async (req, res) => {
                 continue;
             }
 
-            if (existingEmail.has(email)) {
-                skippedRecords.push({ email, reason: "Duplicate email" });
-                continue;
-            }
+            // if (existingEmail.has(email)) {
+            //     skippedRecords.push({ email, reason: "Duplicate email" });
+            //     continue;
+            // }
 
             // Create and save new Course record
             const newCourse = new Course({
@@ -157,7 +159,7 @@ const uploadFile = async (req, res) => {
 
             await newCourse.save();
             insertedRecords.push(newCourse);
-            existingEmail.add(email); // Add to set to prevent rechecking
+            // existingEmail.add(email); // Add to set to prevent rechecking
         }
 
         return res.status(201).json({
