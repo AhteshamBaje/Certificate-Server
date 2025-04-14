@@ -33,10 +33,9 @@ const CourseSchema = new Schema(
 );
 
 
-
 // ✅ Fixed middleware to ensure unique `certificateNumber`
 CourseSchema.pre('save', async function (next) {
-  if (this.isNew) {
+  if (this.isdModified('title') || this.isNew) {
     const currentYear = new Date().getFullYear();
     let randomFourDigit;
     let uniqueCertificateNumber;
@@ -46,7 +45,7 @@ CourseSchema.pre('save', async function (next) {
     let TitleId = "";
     for (let i = 0; i < splitedTitle.length; i++) {
       let word = splitedTitle[i];
-      TitleId += word[0]
+      TitleId += word[0] 
     }
 
     do {
@@ -57,7 +56,12 @@ CourseSchema.pre('save', async function (next) {
       });
     } while (existingCertificate); // Ensure uniqueness
 
-    this.certificateNumber = `FS/${TitleId}/${currentYear}/${randomFourDigit}`;
+    if(this.certificateNumber){
+      const parts = this.certificateNumber.split('/');
+      this.certificateNumber = `FS/${TitleId}/${currentYear}/${parts[3]}`;
+    }else{
+      this.certificateNumber = `FS/${TitleId}/${currentYear}/${randomFourDigit}`;
+    }
   }
 
   // No need to delete records, just ensure certificateNumber is set

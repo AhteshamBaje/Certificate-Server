@@ -7,7 +7,7 @@ OfferRouter.post('/offer', OfferApi);
 OfferRouter.get('/data/:id', offerLetterData);
 OfferRouter.delete('/deleteOfferLeter/:id', deleteOfferLeter);
 OfferRouter.get('/OfferLetterList/:page', offerLetterList);
-OfferRouter.put('/updateOffer', updateOfferLetter);
+OfferRouter.put('/updateOffer/:id', updateOfferLetter);
 OfferRouter.get('/searchData2/:Name', searchData2);
 OfferRouter.post('/offer/upload', uploadOffer);
 OfferRouter.get('/totalRecords2' , totalRecords);

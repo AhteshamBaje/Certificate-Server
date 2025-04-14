@@ -7,6 +7,7 @@ import OfferRouter from './Routes/offerLetterRoutes.js';
 import courseRouter from './Routes/courseRouter.js';
 import registerRouter from './Routes/registerRoute.js';
 import LoginRouter from './Routes/Loginrouter.js';
+import ExpRouter from './Routes/experienceRouter.js';
 const app = express();
 
 app.use(cors({
@@ -31,6 +32,7 @@ app.use('/api2', OfferRouter);
 app.use('/api3' , courseRouter);
 app.use('/api4' , registerRouter);
 app.use('/api5' , LoginRouter);
+app.use('/api6', ExpRouter);
 
 //DB connection..
 const connectDB = async () => {

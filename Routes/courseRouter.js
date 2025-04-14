@@ -1,5 +1,5 @@
 import express from 'express'
-import { course , courseData, courseStudentsList, deleteCourse, searchData3, totalRecords, uploadFile } from '../Controllers/CourseControllers.js';
+import { course , courseData, courseStudentsList, courseUpdateForm, deleteCourse, searchData3, totalRecords, uploadFile } from '../Controllers/CourseControllers.js';
 
 const courseRouter = express.Router();
 
@@ -10,6 +10,7 @@ courseRouter.delete('/delCourse/:id' , deleteCourse);
 courseRouter.get('/searchdata3/:name' , searchData3);
 courseRouter.post('/course/upload' , uploadFile);
 courseRouter.get('/totalRecords' , totalRecords);
+courseRouter.put('/course/update/:id', courseUpdateForm);
 
 
 

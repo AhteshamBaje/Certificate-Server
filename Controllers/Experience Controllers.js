@@ -1,24 +1,25 @@
 import Course from "../models/courseModel.js";
+import EXPERIENCE from "../models/ExperienceModel.js";
 
-const course = async (req, res) => {
+const Experience = async (req, res) => {
     try {
-        const { studentName, email, title, startDate, endDate } = req.body;
+        const { EName, email, jobRole, startDate, endDate } = req.body;
 
-        if (!studentName || !email || !title || !startDate || !endDate)
+        if (!EName || !email || !jobRole || !startDate || !endDate)
             return res.status(401).json({ success: false, message: "all fields required" });
         if (endDate < startDate)
             return res.status(400).json({ success: false, message: "enter the correct date" });
 
-        const emailExisted = await Course.findOne({ email })
+        const emailExisted = await EXPERIENCE.findOne({ email })
         if (emailExisted) {
             return res.status(400).json({ success: false, message: "email already existed" });
         }
 
 
-        const newCourseStudents = new Course({ studentName, email, title, startDate, endDate });
-        await newCourseStudents.save();
+        const newExperienceStudents = new EXPERIENCE({ EName, email, jobRole, startDate, endDate });
+        await newExperienceStudents.save();
 
-        return res.status(200).json({ success: true, message: "Course Certificate generated", Certificate: newCourseStudents })
+        return res.status(200).json({ success: true, message: "Course Certificate generated", ReferenceCertificate: newExperienceStudents })
 
     } catch (error) {
         console.log(error);
@@ -26,11 +27,11 @@ const course = async (req, res) => {
     };
 };
 
-const courseData = async (req, res) => {
+const experienceData = async (req, res) => {
     const { id } = req.params;
 
     try {
-        const data = await Course.findById(id);
+        const data = await EXPERIENCE.findById(id);
         if (!id) {
             return res.status(400).json({ success: false, message: "not getting data to Course form", error: error.message })
         }
@@ -42,7 +43,7 @@ const courseData = async (req, res) => {
 
 };
 
-const courseStudentsList = async (req, res) => {
+const ExperienceList = async (req, res) => {
     const { page } = req.params;
     const pageLimit = 10;
 
@@ -51,10 +52,10 @@ const courseStudentsList = async (req, res) => {
 
 
     try {
-        const totalDocuments = await Course.countDocuments();
+        const totalDocuments = await EXPERIENCE.countDocuments();
         const totalPages = Math.ceil(totalDocuments / pageLimit);
 
-        const list = await Course.find().skip(skipPage).limit(pageLimit);
+        const list = await EXPERIENCE.find().skip(skipPage).limit(pageLimit);
         if (!list) {
             return res.status(402).json({ success: false, message: "list not found" })
         }
@@ -66,7 +67,7 @@ const courseStudentsList = async (req, res) => {
 };
 
 // Delete internship students ..
-const deleteCourse = async (req, res) => {
+const deleteExperience = async (req, res) => {
     try {
         const { id } = req.params; // Extract id from request parameters
 
@@ -82,7 +83,7 @@ const deleteCourse = async (req, res) => {
     }
 };
 
-const searchData3 = async (req, res) => {
+const searchExpData = async (req, res) => {
     const { name } = req.params;
 
     console.log(name);
@@ -100,7 +101,7 @@ const searchData3 = async (req, res) => {
     }
 };
 
-const uploadFile = async (req, res) => {
+const uploadExpFile = async (req, res) => {
     try {
         console.log("runn");
         
@@ -175,7 +176,7 @@ const uploadFile = async (req, res) => {
     }
 };
 
-const totalRecords = async (req, res) => {
+const totalExpRecords = async (req, res) => {
     try {
         const records = await Course.countDocuments();
 
@@ -190,7 +191,7 @@ const totalRecords = async (req, res) => {
     }
 };
 
-const courseUpdateForm = async (req, res) => {
+const expUpdateForm = async (req, res) => {
     try {
         const { id } = req.params;
         const updateData = req.body; // Get updated data from request body
@@ -215,4 +216,4 @@ const courseUpdateForm = async (req, res) => {
     }
 };
 
-export { course, courseData, courseStudentsList, deleteCourse, searchData3, uploadFile, totalRecords , courseUpdateForm}
+export { Experience, experienceData, ExperienceList, deleteExperience, searchExpData, uploadExpFile, totalExpRecords , expUpdateForm}
