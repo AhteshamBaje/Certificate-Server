@@ -204,6 +204,18 @@ const totalRecords = async (req, res) => {
     }
 }
 
+const issuedDate = async (req, res) => {
+    try {
+      const offer = await OFFER.findById(req.params.id);
+      if (!offer) return res.status(404).json({ message: "offer not found" });
+  
+      offer.issuedDate = new Date();
+      await offer.save();
+  
+      res.json({ message: "Issued date updated successfully", issuedDate: offer.issuedDate });
+    } catch (error) {
+      res.status(500).json({ message: "Error updating issued date", error });
+    }
+  };
 
-
-export { OfferApi, offerLetterData, offerLetterList, deleteOfferLeter, updateOfferLetter, searchData2, uploadOffer, totalRecords }
+export { OfferApi, offerLetterData, offerLetterList, deleteOfferLeter, updateOfferLetter, searchData2, uploadOffer, totalRecords , issuedDate }
