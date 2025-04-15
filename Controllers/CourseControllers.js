@@ -215,4 +215,18 @@ const courseUpdateForm = async (req, res) => {
     }
 };
 
-export { course, courseData, courseStudentsList, deleteCourse, searchData3, uploadFile, totalRecords , courseUpdateForm}
+const issuedDate = async (req, res) => {
+    try {
+      const course = await Course.findById(req.params.id);
+      if (!course) return res.status(404).json({ message: "Course not found" });
+  
+      course.issuedDate = new Date();
+      await course.save();
+  
+      res.json({ message: "Issued date updated successfully", issuedDate: course.issuedDate });
+    } catch (error) {
+      res.status(500).json({ message: "Error updating issued date", error });
+    }
+  };
+
+export { course, courseData, courseStudentsList, deleteCourse, searchData3, uploadFile, totalRecords , courseUpdateForm , issuedDate}

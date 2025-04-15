@@ -25,7 +25,11 @@ const offerLetter = new Schema({
     RefereneNo : {
         type : String,
         require : true
-    }
+    },
+    issuedDate: {
+      type: Date,
+      default: null,
+    },
 });
 
 offerLetter.pre('save', async function (next) {

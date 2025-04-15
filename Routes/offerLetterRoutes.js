@@ -1,5 +1,5 @@
 import express from 'express'
-import { deleteOfferLeter, OfferApi, offerLetterData, offerLetterList, searchData2, totalRecords, updateOfferLetter, uploadOffer } from '../Controllers/offerLetterController.js';
+import { deleteOfferLeter, issuedDate, OfferApi, offerLetterData, offerLetterList, searchData2, totalRecords, updateOfferLetter, uploadOffer } from '../Controllers/offerLetterController.js';
 
 const OfferRouter = express.Router();
 
@@ -11,5 +11,6 @@ OfferRouter.put('/updateOffer/:id', updateOfferLetter);
 OfferRouter.get('/searchData2/:Name', searchData2);
 OfferRouter.post('/offer/upload', uploadOffer);
 OfferRouter.get('/totalRecords2' , totalRecords);
+OfferRouter.put('/issuedDate/:id',issuedDate);
 
 export default OfferRouter

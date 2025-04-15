@@ -26,6 +26,10 @@ const CourseSchema = new Schema(
       type: String,
       unique: true,
     },
+    issuedDate: {
+      type: Date,
+      default: null,
+    },
   },
   {
     timestamps: true,

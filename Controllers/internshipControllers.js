@@ -218,7 +218,18 @@ const totalRecords = async (req, res) => {
     }
 };
 
-
-
-
-export { internship, internshipData, studentsList, deleteInternship, updateInternship, searchData, uploadFile, totalRecords };
+const issuedDate = async (req, res) => {
+    try {
+      const internship = await Internship.findById(req.params.id);
+      if (!internship) return res.status(404).json({ message: "Internship not found" });
+  
+      internship.issuedDate = new Date();
+      await internship.save();
+  
+      res.json({ message: "Issued date updated successfully", issuedDate: internship.issuedDate });
+    } catch (error) {
+      res.status(500).json({ message: "Error updating issued date", error });
+    }
+  };
+  
+export { internship, internshipData, studentsList, deleteInternship, updateInternship, searchData, uploadFile, totalRecords , issuedDate };
