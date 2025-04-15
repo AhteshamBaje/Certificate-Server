@@ -1,11 +1,10 @@
-import Course from "../models/courseModel.js";
 import EXPERIENCE from "../models/ExperienceModel.js";
 
 const Experience = async (req, res) => {
     try {
-        const { EName, email, jobRole, startDate, endDate } = req.body;
+        const { employeName, email, jobRole, startDate, endDate } = req.body;
 
-        if (!EName || !email || !jobRole || !startDate || !endDate)
+        if (!employeName || !email || !jobRole || !startDate || !endDate)
             return res.status(401).json({ success: false, message: "all fields required" });
         if (endDate < startDate)
             return res.status(400).json({ success: false, message: "enter the correct date" });
@@ -16,7 +15,7 @@ const Experience = async (req, res) => {
         }
 
 
-        const newExperienceStudents = new EXPERIENCE({ EName, email, jobRole, startDate, endDate });
+        const newExperienceStudents = new EXPERIENCE({ employeName, email, jobRole, startDate, endDate });
         await newExperienceStudents.save();
 
         return res.status(200).json({ success: true, message: "Course Certificate generated", ReferenceCertificate: newExperienceStudents })
@@ -33,12 +32,12 @@ const experienceData = async (req, res) => {
     try {
         const data = await EXPERIENCE.findById(id);
         if (!id) {
-            return res.status(400).json({ success: false, message: "not getting data to Course form", error: error.message })
+            return res.status(400).json({ success: false, message: "not getting data to Experience form", error: error.message })
         }
-        return res.status(200).json({ success: true, message: "Data got in Course form", data: data });
+        return res.status(200).json({ success: true, message: "Data got in Experience form", data: data });
     } catch (error) {
-        console.error("error fetching Course data", error);
-        return res.status(400).json({ success: false, message: "server error while fetchimg Course data" })
+        console.error("error fetching Experience data", error);
+        return res.status(400).json({ success: false, message: "server error while fetchimg Experience data" })
     }
 
 };
@@ -71,14 +70,14 @@ const deleteExperience = async (req, res) => {
     try {
         const { id } = req.params; // Extract id from request parameters
 
-        const del = await Course.findByIdAndDelete(id);
+        const del = await EXPERIENCE.findByIdAndDelete(id);
         if (!del) {
-            return res.status(404).json({ success: false, message: "Course not found" });
+            return res.status(404).json({ success: false, message: "Experience not found" });
         }
 
-        return res.status(200).json({ success: true, message: "Course deleted successfully", data: del });
+        return res.status(200).json({ success: true, message: "Experience deleted successfully", data: del });
     } catch (error) {
-        console.error("Error deleting Course:", error);
+        console.error("Error deleting Experience:", error);
         return res.status(500).json({ success: false, message: "Internal Server Error" });
     }
 };
@@ -89,7 +88,7 @@ const searchExpData = async (req, res) => {
     console.log(name);
     
     try {
-        const data = await Course.find({ studentName: { $regex: name, $options: "i" } });
+        const data = await EXPERIENCE.find({ studentName: { $regex: name, $options: "i" } });
         if (!data) {
             return res.status(400).json({ success: false, message: "searchData not found" });
         }
@@ -119,9 +118,9 @@ const uploadExpFile = async (req, res) => {
         // const existingEmail = new Set(existingInterns.map(intern => intern.email));
 
         for (const record of jsonData) {
-            const { studentName, email, title, startDate, endDate } = record;
+            const { employeName, email, jobRole, startDate, endDate } = record;
 
-            if (!studentName || !email || !title || !startDate || !endDate) {
+            if (!employeName || !email || !jobRole || !startDate || !endDate) {
                 skippedRecords.push({ email, reason: "Missing required fields" });
                 continue;
             }
@@ -139,7 +138,7 @@ const uploadExpFile = async (req, res) => {
                 continue;
             }
 
-            const emailExist = await Course.findOne({ email });
+            const emailExist = await EXPERIENCE.findOne({ email });
             if (emailExist) {
                 continue;
             }
@@ -150,16 +149,16 @@ const uploadExpFile = async (req, res) => {
             // }
 
             // Create and save new Course record
-            const newCourse = new Course({
-                studentName,
+            const newExperience = new EXPERIENCE({
+                employeName,
                 email,
-                title,
+                jobRole,
                 startDate: parsedStartDate,
                 endDate: parsedEndDate
             });
 
-            await newCourse.save();
-            insertedRecords.push(newCourse);
+            await newExperience.save();
+            insertedRecords.push(newExperience);
             // existingEmail.add(email); // Add to set to prevent rechecking
         }
 
@@ -178,7 +177,7 @@ const uploadExpFile = async (req, res) => {
 
 const totalExpRecords = async (req, res) => {
     try {
-        const records = await Course.countDocuments();
+        const records = await EXPERIENCE.countDocuments();
 
         if (records === 0) {
             return res.status(404).json({ success: false, message: "No records" })
@@ -200,18 +199,18 @@ const expUpdateForm = async (req, res) => {
             return res.status(400).json({ success: false, message: "ID is required" });
         }
 
-        const updated = await Course.findByIdAndUpdate(id, updateData, { new: true });
+        const updated = await EXPERIENCE.findByIdAndUpdate(id, updateData, { new: true });
 
         // let titleName = titleId[0].CharAt(0) + titleId[1].CharAt(0);
 
     
         if (!updated) {
-            return res.status(404).json({ success: false, message: "Course not found" });
+            return res.status(404).json({ success: false, message: "Experience not found" });
         }
 
-        return res.status(200).json({ success: true, message: "Course updated successfully", data: updated });
+        return res.status(200).json({ success: true, message: "Experience updated successfully", data: updated });
     } catch (error) {
-        console.error("Error updating Course record:", error);
+        console.error("Error updating Experience record:", error);
         return res.status(500).json({ success: false, message: "Internal Server Error" });
     }
 };

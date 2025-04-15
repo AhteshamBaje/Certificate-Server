@@ -35,7 +35,7 @@ const CourseSchema = new Schema(
 
 // ✅ Fixed middleware to ensure unique `certificateNumber`
 CourseSchema.pre('save', async function (next) {
-  if (this.isdModified('title') || this.isNew) {
+  if (this.isNew) {
     const currentYear = new Date().getFullYear();
     let randomFourDigit;
     let uniqueCertificateNumber;
