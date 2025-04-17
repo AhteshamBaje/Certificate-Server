@@ -223,7 +223,7 @@ const issuedDate = async (req, res) => {
       course.issuedDate = new Date();
       await course.save();
   
-      res.json({ message: "Issued date updated successfully", issuedDate: course.issuedDate });
+      res.json({ message: "Issued date updated successfully", course});
     } catch (error) {
       res.status(500).json({ message: "Error updating issued date", error });
     }
