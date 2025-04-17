@@ -215,4 +215,18 @@ const expUpdateForm = async (req, res) => {
     }
 };
 
-export { Experience, experienceData, ExperienceList, deleteExperience, searchExpData, uploadExpFile, totalExpRecords , expUpdateForm}
+const issuedExpDate = async (req, res) => {
+    try {
+      const ExperienceIssued = await EXPERIENCE.findById(req.params.id);
+      if (!ExperienceIssued) return res.status(404).json({ message: "offer not found" });
+  
+      ExperienceIssued.issuedExpDate = new Date();
+      await ExperienceIssued.save();
+  
+      res.json({ message: "Issued date updated successfully", ExperienceIssued });
+    } catch (error) {
+      res.status(500).json({ message: "Error updating issued date", error });
+    }
+  };
+
+export { Experience, experienceData, ExperienceList, deleteExperience, searchExpData, uploadExpFile, totalExpRecords , expUpdateForm , issuedExpDate}

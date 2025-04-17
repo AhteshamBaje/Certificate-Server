@@ -212,7 +212,7 @@ const issuedDate = async (req, res) => {
       offer.issuedDate = new Date();
       await offer.save();
   
-      res.json({ message: "Issued date updated successfully", issuedDate: offer.issuedDate });
+      res.json({ message: "Issued date updated successfully", offer });
     } catch (error) {
       res.status(500).json({ message: "Error updating issued date", error });
     }

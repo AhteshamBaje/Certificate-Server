@@ -1,5 +1,5 @@
 import express from 'express'
-import { deleteExperience, Experience, experienceData, ExperienceList, expUpdateForm, searchExpData, totalExpRecords, uploadExpFile } from '../Controllers/Experience Controllers.js';
+import { deleteExperience, Experience, experienceData, ExperienceList, expUpdateForm,  issuedExpDate, searchExpData, totalExpRecords, uploadExpFile } from '../Controllers/Experience Controllers.js';
 
 const ExpRouter = express.Router();
 
@@ -11,6 +11,8 @@ ExpRouter.put('/updateexperience/:id', expUpdateForm);
 ExpRouter.get('/searchdata/:name', searchExpData);
 ExpRouter.post('/experience/upload' , uploadExpFile);
 ExpRouter.get('/totalRecords' , totalExpRecords);
+ExpRouter.put('/issuedDate/:id', issuedExpDate);
+
 
 
 export default ExpRouter;
