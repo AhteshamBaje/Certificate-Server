@@ -88,7 +88,7 @@ const searchExpData = async (req, res) => {
     console.log(name);
     
     try {
-        const data = await EXPERIENCE.find({ studentName: { $regex: name, $options: "i" } });
+        const data = await EXPERIENCE.find({ employeName: { $regex: name, $options: "i" } });
         if (!data) {
             return res.status(400).json({ success: false, message: "searchData not found" });
         }
@@ -102,20 +102,14 @@ const searchExpData = async (req, res) => {
 
 const uploadExpFile = async (req, res) => {
     try {
-        console.log("runn");
-        
-        const jsonData = req.body.jsonData; // Expecting an array of records
-        console.log(jsonData);
+        const { jsonData } = req.body;
 
-        if (!jsonData || jsonData.length === 0) {
+        if (!jsonData || !Array.isArray(jsonData) || jsonData.length === 0) {
             return res.status(400).json({ success: false, message: "No data provided" });
         }
 
         let insertedRecords = [];
         let skippedRecords = [];
-
-        // const existingInterns = await Course.find({}, "email");
-        // const existingEmail = new Set(existingInterns.map(intern => intern.email));
 
         for (const record of jsonData) {
             const { employeName, email, jobRole, startDate, endDate } = record;
@@ -138,39 +132,33 @@ const uploadExpFile = async (req, res) => {
                 continue;
             }
 
-            const emailExist = await EXPERIENCE.findOne({ email });
-            if (emailExist) {
+            const existing = await EXPERIENCE.findOne({ email });
+            if (existing) {
+                skippedRecords.push({ email, reason: "Email already exists" });
                 continue;
             }
 
-            // if (existingEmail.has(email)) {
-            //     skippedRecords.push({ email, reason: "Duplicate email" });
-            //     continue;
-            // }
-
-            // Create and save new Course record
             const newExperience = new EXPERIENCE({
                 employeName,
                 email,
                 jobRole,
                 startDate: parsedStartDate,
-                endDate: parsedEndDate
+                endDate: parsedEndDate,
             });
 
             await newExperience.save();
             insertedRecords.push(newExperience);
-            // existingEmail.add(email); // Add to set to prevent rechecking
         }
 
         return res.status(201).json({
             success: true,
-            message: `${insertedRecords.length} new records added`,
+            message: `${insertedRecords.length} records inserted`,
             insertedRecords,
-            skippedRecords
+            skippedRecords,
         });
 
     } catch (error) {
-        console.error("Server error:", error);
+        console.error("Error in uploadExpFile:", error);
         return res.status(500).json({ success: false, message: "Server error occurred" });
     }
 };
@@ -220,7 +208,7 @@ const issuedExpDate = async (req, res) => {
       const ExperienceIssued = await EXPERIENCE.findById(req.params.id);
       if (!ExperienceIssued) return res.status(404).json({ message: "offer not found" });
   
-      ExperienceIssued.issuedExpDate = new Date();
+      ExperienceIssued.issuedDate = new Date();
       await ExperienceIssued.save();
   
       res.json({ message: "Issued date updated successfully", ExperienceIssued });
