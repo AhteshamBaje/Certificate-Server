@@ -2,9 +2,9 @@ import EXPERIENCE from "../models/ExperienceModel.js";
 
 const Experience = async (req, res) => {
     try {
-        const { employeName, email, jobRole, startDate, endDate } = req.body;
+        const { employeName, email, jobRole,responsibilities, startDate, endDate } = req.body;
 
-        if (!employeName || !email || !jobRole || !startDate || !endDate)
+        if (!employeName || !email || !jobRole || !responsibilities || !startDate || !endDate)
             return res.status(401).json({ success: false, message: "all fields required" });
         if (endDate < startDate)
             return res.status(400).json({ success: false, message: "enter the correct date" });
@@ -15,7 +15,7 @@ const Experience = async (req, res) => {
         }
 
 
-        const newExperienceStudents = new EXPERIENCE({ employeName, email, jobRole, startDate, endDate });
+        const newExperienceStudents = new EXPERIENCE({ employeName, email, jobRole, responsibilities, startDate, endDate });
         await newExperienceStudents.save();
 
         return res.status(200).json({ success: true, message: "Course Certificate generated", ReferenceCertificate: newExperienceStudents })
@@ -112,9 +112,9 @@ const uploadExpFile = async (req, res) => {
         let skippedRecords = [];
 
         for (const record of jsonData) {
-            const { employeName, email, jobRole, startDate, endDate } = record;
+            const { employeName, email, jobRole, responsibilities, startDate, endDate } = record;
 
-            if (!employeName || !email || !jobRole || !startDate || !endDate) {
+            if (!employeName || !email || !jobRole || !responsibilities || !startDate || !endDate) {
                 skippedRecords.push({ email, reason: "Missing required fields" });
                 continue;
             }
@@ -142,6 +142,7 @@ const uploadExpFile = async (req, res) => {
                 employeName,
                 email,
                 jobRole,
+                responsibilities,
                 startDate: parsedStartDate,
                 endDate: parsedEndDate,
             });

@@ -15,6 +15,10 @@ const ExperienceSchema = new Schema(
       type: String,
       required: true
     },
+    responsibilities:{
+      type:String,
+      required:true
+    },
     startDate: {
       type: Date,
       required: true,
