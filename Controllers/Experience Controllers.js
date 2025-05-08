@@ -2,7 +2,7 @@ import EXPERIENCE from "../models/ExperienceModel.js";
 
 const Experience = async (req, res) => {
     try {
-        const { employeName, email, jobRole,responsibilities, startDate, endDate } = req.body;
+        const { employeName, email, jobRole, responsibilities, startDate, endDate } = req.body;
 
         if (!employeName || !email || !jobRole || !responsibilities || !startDate || !endDate)
             return res.status(401).json({ success: false, message: "all fields required" });
@@ -86,7 +86,7 @@ const searchExpData = async (req, res) => {
     const { name } = req.params;
 
     console.log(name);
-    
+
     try {
         const data = await EXPERIENCE.find({ employeName: { $regex: name, $options: "i" } });
         if (!data) {
@@ -188,11 +188,37 @@ const expUpdateForm = async (req, res) => {
             return res.status(400).json({ success: false, message: "ID is required" });
         }
 
+        const existingExperience = await EXPERIENCE.findById(id);
+        if (!existingExperience) {
+            return res.status(404).json({ success: false, message: "Experience not found" });
+        }
+
+        if (updateData.jobRole && updateData.jobRole !== existingExperience.jobRole) {
+            const currentYear = new Date().getFullYear();
+            const jobRoleId = updateData.jobRole.split(" ");
+            const jobRoleName = jobRoleId[0].charAt(0) + jobRoleId[1].charAt(0);
+            const parts = existingExperience.ReferenceNumber.split('/');
+            const randomFourDigit = parts[3]; // Keep the last 4 digits from the existing certificate number
+            updateData.ReferenceNumber = `FS/${jobRoleName}/${currentYear}/${randomFourDigit}`;
+
+        } else if (!updateData.ReferenceNumber) {
+            const currentYear = new Date().getFullYear();
+            const jobRoleId = existingExperience.jobRole.split(" ");
+            const jobRoleName = jobRoleId[0].charAt(0) + jobRoleId[1].charAt(0);
+
+            const randomFourDigit = Math.floor(1000 + Math.random() * 9000); // Generate a new random 4-digit number
+            updateData.ReferenceNumber = `FS/${jobRoleName}/${currentYear}/${randomFourDigit}`;
+        }
+
+        if (updateData.startDate && updateData.endDate && updateData.endDate < updateData.startDate) {
+            return res.status(400).json({ success: false, message: "End date cannot be before start date" });
+        }
+
         const updated = await EXPERIENCE.findByIdAndUpdate(id, updateData, { new: true });
 
         // let titleName = titleId[0].CharAt(0) + titleId[1].CharAt(0);
 
-    
+
         if (!updated) {
             return res.status(404).json({ success: false, message: "Experience not found" });
         }
@@ -206,16 +232,16 @@ const expUpdateForm = async (req, res) => {
 
 const issuedExpDate = async (req, res) => {
     try {
-      const ExperienceIssued = await EXPERIENCE.findById(req.params.id);
-      if (!ExperienceIssued) return res.status(404).json({ message: "offer not found" });
-  
-      ExperienceIssued.issuedDate = new Date();
-      await ExperienceIssued.save();
-  
-      res.json({ message: "Issued date updated successfully", ExperienceIssued });
-    } catch (error) {
-      res.status(500).json({ message: "Error updating issued date", error });
-    }
-  };
+        const ExperienceIssued = await EXPERIENCE.findById(req.params.id);
+        if (!ExperienceIssued) return res.status(404).json({ message: "offer not found" });
 
-export { Experience, experienceData, ExperienceList, deleteExperience, searchExpData, uploadExpFile, totalExpRecords , expUpdateForm , issuedExpDate}
+        ExperienceIssued.issuedDate = new Date();
+        await ExperienceIssued.save();
+
+        res.json({ message: "Issued date updated successfully", ExperienceIssued });
+    } catch (error) {
+        res.status(500).json({ message: "Error updating issued date", error });
+    }
+};
+
+export { Experience, experienceData, ExperienceList, deleteExperience, searchExpData, uploadExpFile, totalExpRecords, expUpdateForm, issuedExpDate }

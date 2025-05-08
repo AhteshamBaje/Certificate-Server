@@ -86,7 +86,7 @@ const searchData3 = async (req, res) => {
     const { name } = req.params;
 
     console.log(name);
-    
+
     try {
         const data = await Course.find({ studentName: { $regex: name, $options: "i" } });
         if (!data) {
@@ -103,7 +103,7 @@ const searchData3 = async (req, res) => {
 const uploadFile = async (req, res) => {
     try {
         console.log("runn");
-        
+
         const jsonData = req.body.jsonData; // Expecting an array of records
         console.log(jsonData);
 
@@ -199,11 +199,38 @@ const courseUpdateForm = async (req, res) => {
             return res.status(400).json({ success: false, message: "ID is required" });
         }
 
+        const existingCourse = await Course.findById(id);
+        if (!existingCourse) {
+            return res.status(404).json({ success: false, message: "Course not found" });
+        }
+
+        if (updateData.title && updateData.title !== existingCourse.title) {
+            const currentYear = new Date().getFullYear();
+            const titleId = updateData.title.split(" ");
+            const titleName = titleId[0].charAt(0) + titleId[1].charAt(0);
+            const parts = existingCourse.certificateNumber.split('/');
+            
+            const randomFourDigit = parts[3]; // Keep the last 4 digits from the existing certificate number
+            updateData.certificateNumber = `FS/${titleName}/${currentYear}/${randomFourDigit}`;
+            // updateData.certificateNumber = `FS/${titleName}/${currentYear}/${randomFourDigit}`;
+
+        } else if (!updateData.certificateNumber) {
+            const currentYear = new Date().getFullYear();
+            const titleId = existingCourse.title.split(" ");
+            const titleName = titleId[0].charAt(0) + titleId[1].charAt(0);
+            const randomFourDigit = Math.floor(1000 + Math.random() * 9000); // Generate a new random 4-digit number
+            updateData.certificateNumber = `FS/${titleName}/${currentYear}/${randomFourDigit}`;
+        }
+
+        if (updateData.startDate && updateData.endDate && updateData.endDate < updateData.startDate) {
+            return res.status(400).json({ success: false, message: "End date cannot be before start date" });
+        }
+
         const updated = await Course.findByIdAndUpdate(id, updateData, { new: true });
 
         // let titleName = titleId[0].CharAt(0) + titleId[1].CharAt(0);
 
-    
+
         if (!updated) {
             return res.status(404).json({ success: false, message: "Course not found" });
         }
@@ -217,16 +244,16 @@ const courseUpdateForm = async (req, res) => {
 
 const issuedDate = async (req, res) => {
     try {
-      const course = await Course.findById(req.params.id);
-      if (!course) return res.status(404).json({ message: "Course not found" });
-  
-      course.issuedDate = new Date();
-      await course.save();
-  
-      res.json({ message: "Issued date updated successfully", course});
-    } catch (error) {
-      res.status(500).json({ message: "Error updating issued date", error });
-    }
-  };
+        const course = await Course.findById(req.params.id);
+        if (!course) return res.status(404).json({ message: "Course not found" });
 
-export { course, courseData, courseStudentsList, deleteCourse, searchData3, uploadFile, totalRecords , courseUpdateForm , issuedDate}
+        course.issuedDate = new Date();
+        await course.save();
+
+        res.json({ message: "Issued date updated successfully", course });
+    } catch (error) {
+        res.status(500).json({ message: "Error updating issued date", error });
+    }
+};
+
+export { course, courseData, courseStudentsList, deleteCourse, searchData3, uploadFile, totalRecords, courseUpdateForm, issuedDate }
